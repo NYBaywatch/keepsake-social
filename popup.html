@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    body { font: 13px system-ui, sans-serif; width: 240px; padding: 12px; }
+    h1 { font-size: 14px; margin: 0 0 8px; }
+    button { display: block; width: 100%; margin: 6px 0; padding: 8px; cursor: pointer;
+             border: none; border-radius: 6px; color: #fff;
+             background: linear-gradient(180deg, #f59e0b, #e11d48); }
+    button:disabled { opacity: 0.5; cursor: default; }
+    #status { margin-top: 8px; color: #555; min-height: 1.2em; }
+    .hint { color: #888; font-size: 11px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Keepsake</h1>
+  <button data-format="json">Export JSON</button>
+  <button data-format="csv">Export CSV</button>
+  <button data-format="md">Export Markdown</button>
+  <div id="status"></div>
+  <div class="hint">Open linkedin.com/my-items/saved-posts/ first. The page will auto-scroll to load everything.</div>
+  <script src="popup.js"></script>
+</body>
+</html>
