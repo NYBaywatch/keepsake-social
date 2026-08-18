@@ -1,8 +1,8 @@
-# Keepsake for LinkedIn
+# Keepsake Social
 
-Export your own LinkedIn saved posts to JSON, CSV, or Markdown — entirely locally in your browser. No servers, no accounts, nothing leaves your machine.
+Export your own saved posts from **LinkedIn** and **Instagram** to JSON, CSV, or Markdown — entirely locally in your browser. No servers, no accounts, nothing leaves your machine.
 
-LinkedIn's official data export gives you bare URLs with no post content, and those links rot as posts get deleted. Keepsake captures the actual content of everything you've saved, in one click.
+Platforms give you no good way out: LinkedIn's official data export is bare URLs with no post content, and Instagram's buries saves in a request-and-wait archive. Keepsake captures the actual content of everything you've saved, in one click.
 
 ## Install (load unpacked)
 
@@ -12,31 +12,39 @@ LinkedIn's official data export gives you bare URLs with no post content, and th
 
 ## Use
 
-1. Go to <https://www.linkedin.com/my-items/saved-posts/> while logged in.
-2. Click the Keepsake icon in the toolbar.
-3. Pick a format. The page auto-scrolls until the whole list has loaded (~1.5s per batch), then the file downloads.
+1. Open your saved items page while logged in:
+   - LinkedIn: `linkedin.com/my-items/saved-posts/`
+   - Instagram: `instagram.com/<your-username>/saved/all-posts/`
+2. Click the Keepsake icon in the toolbar and pick a format.
+3. The page auto-scrolls until the whole list has loaded, then the file downloads.
 
-Each saved post exports as:
+Exported fields:
 
-| field | contents |
+| platform | fields |
 |---|---|
-| `url` | post permalink |
-| `author` / `authorUrl` | who posted it, with profile/company link |
-| `text` | the card's full visible text |
+| LinkedIn | `url`, `author`, `authorUrl`, `text` (full visible card text) |
+| Instagram | `url`, `caption` (full caption from the grid), `image` (thumbnail URL) |
 
 ## How it works
 
-Three small files, no build step:
+No build step — a shared core plus one small collector per platform:
 
-- `content.js` — injected only on `linkedin.com/my-items/*`; auto-scrolls, scrapes, serializes, downloads
-- `popup.html` / `popup.js` — the toolbar UI; talks to the content script via Chrome message passing
+- `common.js` — scroll-and-accumulate loop, serializers, download, popup messaging
+- `linkedin.js` / `instagram.js` — platform collectors
+- `popup.html` / `popup.js` — the toolbar UI
 
-Post cards are identified by their **permalink URLs** (`/feed/update/`, `/posts/`, `/pulse/`) rather than LinkedIn's obfuscated CSS class names, so redesigns are less likely to break extraction. If an export ever comes back empty, the heuristics to adjust are `findCards()` and `extractCard()` in `content.js`.
+Design notes that keep it robust:
+
+- **Cards are identified by permalink URLs** (`/feed/update/`, `/p/`, `/reel/`, …), not the platforms' obfuscated CSS class names, so redesigns are less likely to break extraction.
+- **Collection happens on every scroll pass**, not once at the end — Instagram virtualizes its grid and unmounts off-screen tiles, so late collection would silently drop items.
+- Instagram's saved grid stores each post's full caption in the thumbnail `alt` text, so no per-post navigation is needed.
+
+If an export ever comes back empty after a redesign, the collectors (`liCollectPass` / `igCollectPass`) are the place to adjust.
 
 ## Notes
 
-- For personal use on your own account at human pace. LinkedIn's User Agreement frowns on automated collection generally — don't run this in a loop all day.
-- Not affiliated with or endorsed by LinkedIn.
+- For personal use on your own account at human pace. Both platforms' terms frown on automated collection generally — don't run this in a loop all day.
+- Not affiliated with or endorsed by LinkedIn or Instagram/Meta.
 
 ## License
 

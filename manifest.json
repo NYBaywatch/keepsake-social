@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Keepsake for LinkedIn",
-  "version": "0.2.0",
-  "description": "Export your own LinkedIn saved posts to JSON, CSV, or Markdown. Runs entirely locally — nothing leaves your machine.",
+  "name": "Keepsake Social",
+  "version": "0.3.0",
+  "description": "Export your own saved posts from LinkedIn and Instagram to JSON, CSV, or Markdown. Runs entirely locally — nothing leaves your machine.",
   "permissions": ["activeTab"],
   "icons": {
     "16": "icons/icon16.png",
@@ -11,8 +11,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.linkedin.com/my-items/*"],
-      "js": ["content.js"],
+      "matches": ["https://www.linkedin.com/*"],
+      "js": ["common.js", "linkedin.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.instagram.com/*"],
+      "js": ["common.js", "instagram.js"],
       "run_at": "document_idle"
     }
   ],
